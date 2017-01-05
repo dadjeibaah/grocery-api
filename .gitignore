@@ -1,0 +1,12 @@
+
+.gradle
+*.sw?
+.#*
+*#
+*~
+build
+*.iml
+.idea
+*.jar
+
+
