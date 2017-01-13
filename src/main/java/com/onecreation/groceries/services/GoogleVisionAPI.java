@@ -7,7 +7,6 @@ import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
 import com.google.api.services.vision.v1.model.*;
 import com.google.common.collect.ImmutableList;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,10 +19,11 @@ import java.security.GeneralSecurityException;
 @Service
 public class GoogleVisionAPI implements GoogleAPI {
     private final String APPLICATION_NAME = "GroceryAPI";
+    private final String API_KEY = System.getenv("CLOUD_VISION_API_KEY");
     private Vision vision;
 
-    @Value("${vision.apikey}")
-    private String apiKey;
+
+
 
 
     private GoogleVisionAPI() {
@@ -34,7 +34,7 @@ public class GoogleVisionAPI implements GoogleAPI {
 
         if(vision == null){
             try {
-                VisionRequestInitializer requestInitializer = new VisionRequestInitializer(apiKey);
+                VisionRequestInitializer requestInitializer = new VisionRequestInitializer(API_KEY);
 
                 JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
                 vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
