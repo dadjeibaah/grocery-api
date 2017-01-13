@@ -1,9 +1,11 @@
 package com.onecreation.groceries.services;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
+import com.google.api.services.vision.v1.VisionRequest;
 import com.google.api.services.vision.v1.VisionRequestInitializer;
 import com.google.api.services.vision.v1.model.*;
 import com.google.common.collect.ImmutableList;
@@ -34,7 +36,18 @@ public class GoogleVisionAPI implements GoogleAPI {
 
         if(vision == null){
             try {
-                VisionRequestInitializer requestInitializer = new VisionRequestInitializer(API_KEY);
+                VisionRequestInitializer requestInitializer =
+                        new VisionRequestInitializer(API_KEY) {
+
+                            @Override
+                            protected void initializeVisionRequest(VisionRequest<?> visionRequest)
+                                    throws IOException {
+                                super.initializeVisionRequest(visionRequest);
+                                HttpHeaders headers = visionRequest.getRequestHeaders();
+                                headers.set("Referer", "grocery-estimator-api.herokuapp.com");
+                                visionRequest.setRequestHeaders(headers);
+                            }
+                        };
 
                 JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
                 vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
