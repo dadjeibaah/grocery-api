@@ -22,7 +22,7 @@ public class GoogleVisionAPI implements GoogleAPI {
     private final String APPLICATION_NAME = "GroceryAPI";
     private Vision vision;
 
-    @Value("${CLOUD_VISION_API_KEY}")
+    @Value("${vision.apikey}")
     private String apiKey;
 
 
