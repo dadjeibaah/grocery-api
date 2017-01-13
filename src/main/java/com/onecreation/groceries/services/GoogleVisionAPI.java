@@ -27,36 +27,42 @@ public class GoogleVisionAPI implements GoogleAPI {
 
 
     private GoogleVisionAPI() {
-        vision = getVisionAPI();
+
     }
 
     private Vision getVisionAPI() {
-        Vision vision = null;
-        try {
-            VisionRequestInitializer requestInitializer = new VisionRequestInitializer(apiKey);
-            System.out.println(apiKey);
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
-                    .setApplicationName(APPLICATION_NAME)
-                    .setVisionRequestInitializer(requestInitializer)
-                    .build();
-        } catch (IOException | GeneralSecurityException e) {
-            e.printStackTrace(System.out);
 
+        if(vision == null){
+            try {
+                VisionRequestInitializer requestInitializer = new VisionRequestInitializer(apiKey);
+
+                JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+                vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
+                        .setApplicationName(APPLICATION_NAME)
+                        .setVisionRequestInitializer(requestInitializer)
+                        .build();
+            } catch (IOException | GeneralSecurityException e) {
+                e.printStackTrace(System.out);
+
+            }
+            return vision;
+        }else{
+            return vision;
         }
-        return vision;
+
 
 
     }
 
     public String detectTextInImage(byte[] imageData) throws IOException {
+
         AnnotateImageRequest request = new AnnotateImageRequest()
                 .setImage(new Image().encodeContent(imageData))
                 .setFeatures(ImmutableList.of(
                         new Feature()
                                 .setType("TEXT_DETECTION")));
 
-        Vision.Images.Annotate annotate = vision.images()
+        Vision.Images.Annotate annotate = getVisionAPI().images()
                 .annotate(new BatchAnnotateImagesRequest().setRequests(ImmutableList.of(request)));
         annotate.setDisableGZipContent(true);
 
