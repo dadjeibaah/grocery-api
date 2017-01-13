@@ -1,13 +1,13 @@
 package com.onecreation.groceries.services;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.vision.v1.Vision;
-import com.google.api.services.vision.v1.VisionScopes;
+import com.google.api.services.vision.v1.VisionRequestInitializer;
 import com.google.api.services.vision.v1.model.*;
 import com.google.common.collect.ImmutableList;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +22,9 @@ public class GoogleVisionAPI implements GoogleAPI {
     private final String APPLICATION_NAME = "GroceryAPI";
     private Vision vision;
 
+    @Value("${CLOUD_VISION_API_KEY}")
+    private String apiKey;
+
 
     private GoogleVisionAPI() {
         vision = getVisionAPI();
@@ -30,10 +33,11 @@ public class GoogleVisionAPI implements GoogleAPI {
     private Vision getVisionAPI() {
         Vision vision = null;
         try {
-            GoogleCredential credential = GoogleCredential.getApplicationDefault().createScoped(VisionScopes.all());
+            VisionRequestInitializer requestInitializer = new VisionRequestInitializer(apiKey);
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, credential)
+            vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
                     .setApplicationName(APPLICATION_NAME)
+                    .setVisionRequestInitializer(requestInitializer)
                     .build();
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace(System.out);
