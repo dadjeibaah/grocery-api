@@ -34,6 +34,7 @@ public class GoogleVisionAPI implements GoogleAPI {
         Vision vision = null;
         try {
             VisionRequestInitializer requestInitializer = new VisionRequestInitializer(apiKey);
+            System.out.println(apiKey);
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             vision = new Vision.Builder(GoogleNetHttpTransport.newTrustedTransport(), jsonFactory, null)
                     .setApplicationName(APPLICATION_NAME)
