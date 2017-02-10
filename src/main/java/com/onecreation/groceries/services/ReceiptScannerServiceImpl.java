@@ -1,7 +1,7 @@
 package com.onecreation.groceries.services;
 
-import com.onecreation.groceries.models.GroceryList;
-import com.onecreation.groceries.models.Item;
+import com.onecreation.groceries.models.ItemDetail;
+import com.onecreation.groceries.models.ReceiptItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,26 +27,23 @@ public class ReceiptScannerServiceImpl implements ReceiptScannerService {
     }
 
     @Override
-    public GroceryList getReceiptInformation(MultipartFile file) {
+    public List<ReceiptItem> getReceiptInformation(MultipartFile file) {
         byte[] imageData;
-        GroceryList list = null;
+        List<ReceiptItem> items;
         try {
             imageData = file.getBytes();
             String unparsedText = visionAPI.detectTextInImage(imageData);
-            List<Item> items = new ArrayList<>();
+            items = new ArrayList<>();
             Pattern pattern = Pattern.compile(REGEX);
             Matcher matches = pattern.matcher(unparsedText);
             while(matches.find()){
-                items.add(new Item(matches.group(1), matches.group(2)));
+                items.add(new ReceiptItem(matches.group(1), new ItemDetail(matches.group(2))));
             }
-            list = new GroceryList(items);
-
         } catch (IOException e) {
             e.printStackTrace(System.out);
-            return new GroceryList();
+            items = new ArrayList<>();
+            return items;
         }
-
-
-        return list;
+        return items;
     }
 }

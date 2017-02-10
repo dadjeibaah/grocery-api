@@ -1,21 +1,16 @@
 package com.onecreation.groceriestest.services;
 
-import com.onecreation.groceries.models.GroceryList;
-import com.onecreation.groceries.models.Item;
 import com.onecreation.groceries.services.GoogleAPI;
 import com.onecreation.groceries.services.ReceiptScannerService;
 import com.onecreation.groceries.services.ReceiptScannerServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.util.Assert;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
