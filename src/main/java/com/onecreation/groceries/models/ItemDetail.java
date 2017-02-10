@@ -23,7 +23,12 @@ public class ItemDetail {
         this.price = price;
     }
     public ItemDetail(String stringPrice){
-        this.price = new BigDecimal(stringPrice);
+        try{
+            this.price = new BigDecimal(stringPrice);
+        }catch (NumberFormatException e){
+            this.price = new BigDecimal("0.00");
+        }
+
     }
 
     public ReceiptItem getReceiptItem() {
