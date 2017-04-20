@@ -15,10 +15,11 @@ public class ItemDetail {
     private BigDecimal price;
     private String store;
     private Date date;
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "receipt_item_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "receipt_item_id")
     private ReceiptItem receiptItem;
 
+    public ItemDetail(){}
     public ItemDetail(BigDecimal price) {
         this.price = price;
     }

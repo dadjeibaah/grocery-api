@@ -4,17 +4,16 @@ import com.onecreation.groceries.dto.ReceiptItemDto;
 import com.onecreation.groceries.models.ItemDetail;
 import com.onecreation.groceries.models.ReceiptItem;
 import com.onecreation.groceries.services.ItemDetailRepository;
+import com.onecreation.groceries.services.ReceiptItemRepository;
 import com.onecreation.groceries.services.ReceiptScannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,12 +26,15 @@ public class ReceiptsController {
 
     private final ReceiptScannerService receiptScannerService;
     private final ItemDetailRepository itemDetailRepository;
+    private final ReceiptItemRepository receiptItemRepository;
 
     @Autowired
     public  ReceiptsController(ReceiptScannerService receiptScannerService,
-                               ItemDetailRepository itemDetailRepository){
+                               ItemDetailRepository itemDetailRepository,
+                               ReceiptItemRepository receiptItemRepository){
         this.receiptScannerService = receiptScannerService;
         this.itemDetailRepository = itemDetailRepository;
+        this.receiptItemRepository = receiptItemRepository;
     }
 
     @RequestMapping(value ="/images",method = RequestMethod.POST)
@@ -42,13 +44,15 @@ public class ReceiptsController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Iterable<ItemDetail>> saveReceiptList(@RequestBody List<ReceiptItemDto> listOfReceiptItems){
-        List<ItemDetail> list = listOfReceiptItems
-                .stream()
-                .map(n -> itemDetailRepository.convertDtoToModel(n))
-                .collect(Collectors.toList());
-        Iterable<ItemDetail> savedItems = itemDetailRepository.save(list);
-        return new ResponseEntity<>(savedItems, HttpStatus.OK);
+    public ResponseEntity<Iterable<ReceiptItem>> saveReceiptList(@RequestBody List<ReceiptItem> listOfReceiptItems){
+        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/search",method = RequestMethod.POST)
+    public ResponseEntity<List<ReceiptItem>> searchReceiptItems(@RequestParam String searchTerm){
+        List<ReceiptItem> receiptItems = receiptItemRepository.findAllByItemNameContainingIgnoreCase(searchTerm);
+        return new ResponseEntity<>(receiptItems, HttpStatus.OK);
+
     }
 
 }

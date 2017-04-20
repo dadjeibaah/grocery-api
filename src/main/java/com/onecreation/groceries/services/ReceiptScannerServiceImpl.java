@@ -37,7 +37,9 @@ public class ReceiptScannerServiceImpl implements ReceiptScannerService {
             Pattern pattern = Pattern.compile(REGEX);
             Matcher matches = pattern.matcher(unparsedText);
             while(matches.find()){
-                items.add(new ReceiptItem(matches.group(1), new ItemDetail(matches.group(2))));
+                String itemName = matches.group(1);
+                String price = parsePrice(matches.group(2));
+                items.add(new ReceiptItem(itemName, new ItemDetail(price)));
             }
         } catch (IOException e) {
             e.printStackTrace(System.out);
@@ -45,5 +47,9 @@ public class ReceiptScannerServiceImpl implements ReceiptScannerService {
             return items;
         }
         return items;
+    }
+
+    private String parsePrice(String price){
+        return price.replaceAll("(\\s)|([A-Za-z])", "");
     }
 }

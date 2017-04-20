@@ -18,10 +18,14 @@ public class ReceiptItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String itemName;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "receiptItem")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "receiptItem")
     private List<ItemDetail> itemDetails;
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Groceries> groceries;
+
+    public ReceiptItem(){
+
+    }
 
     public ReceiptItem(String itemName){
         this.itemName = itemName;
